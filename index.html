@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aditya Super AI</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; }
+        .box { max-width: 400px; margin: auto; background: #1e293b; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #chat { height: 300px; overflow-y: auto; background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; border: 1px solid #334155; }
+        input { width: 80%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 10px; background: #334155; color: white; outline: none; }
+        button { width: 85%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .premium { font-size: 12px; color: #94a3b8; margin-top: 15px; border-top: 1px solid #334155; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Aditya AI 🚀</h1>
+        <div id="chat">नमस्ते आदित्य भाई! मैं आपका अपना AI हूँ। पूछिये, मैं आपकी क्या मदद कर सकता हूँ?</div>
+        <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
+        <button onclick="askAI()">पूछें</button>
+        <div class="premium">💎 प्रीमियम फीचर्स (PDF/Image): ₹19/हफ्ता</div>
+    </div>
+
+    <script>
+        async function askAI() {
+            const input = document.getElementById('userInput').value;
+            const chat = document.getElementById('chat');
+            if(!input) return;
+            chat.innerHTML += `<p style="color:#38bdf8"><b>आप:</b> ${input}</p>`;
+            document.getElementById('userInput').value = '';
+            chat.innerHTML += `<p id="loading">AI सोच रहा है...</p>`;
+            chat.scrollTop = chat.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: input })
+                });
+                const data = await res.json();
+                document.getElementById('loading').remove();
+                chat.innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
+            } catch (err) {
+                document.getElementById('loading').innerHTML = "त्रुटि! सर्वर व्यस्त है।";
+            }
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>

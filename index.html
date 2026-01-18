@@ -7,31 +7,29 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background: #0b0e14; color: #00ff41; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .app-container { width: 95%; max-width: 450px; height: 90vh; background: #1a1f26; border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,255,65,0.3); border: 1px solid #00ff41; }
-        .header { background: #252a34; padding: 15px; text-align: center; font-weight: bold; font-size: 1.4rem; border-bottom: 2px solid #00ff41; color: #00ff41; text-shadow: 0 0 10px #00ff41; }
+        .header { background: #252a34; padding: 15px; text-align: center; font-weight: bold; font-size: 1.4rem; border-bottom: 2px solid #00ff41; color: #00ff41; }
         #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; background: #0b0e14; }
         .msg { padding: 12px 16px; border-radius: 18px; max-width: 85%; line-height: 1.4; font-size: 0.95rem; }
-        .user { background: #00ff41; color: #000; align-self: flex-end; font-weight: bold; box-shadow: 0 0 10px #00ff4155; }
+        .user { background: #00ff41; color: #000; align-self: flex-end; font-weight: bold; }
         .ai { background: #252a34; color: #00ff41; align-self: flex-start; border: 1px solid #00ff4144; }
-        .input-area { padding: 15px; background: #1a1f26; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #333; }
+        .input-area { padding: 15px; background: #1a1f26; display: flex; flex-direction: column; gap: 10px; }
         .controls { display: flex; gap: 8px; }
         input { flex: 1; background: #0b0e14; border: 1px solid #00ff41; padding: 12px; border-radius: 12px; color: #00ff41; outline: none; }
-        button { background: #00ff41; color: #000; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:active { transform: scale(0.95); }
+        button { background: #00ff41; color: #000; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .cam-btn { background: #222; color: #00ff41; border: 1px solid #00ff41; }
-        .preview-img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 2px solid #00ff41; margin-bottom: 5px; animation: glow 1.5s infinite alternate; }
-        @keyframes glow { from { box-shadow: 0 0 5px #00ff41; } to { box-shadow: 0 0 15px #00ff41; } }
+        .preview-img { width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 2px solid #00ff41; margin-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">SUPER AI 🤖</div>
         <div id="chat-box">
-            <div class="msg ai">Aur Aditya bhai, kaise ho? Main Super AI hoon. Kuch pucho ya camera se photo dikhao!</div>
+            <div class="msg ai">Bolo Aditya bhai! Super AI haazir hai. Kuch bhi pucho!</div>
         </div>
         <div class="input-area">
             <div id="img-preview-box"></div>
             <div class="controls">
-                <input type="text" id="userInput" placeholder="Super AI se baat karein...">
+                <input type="text" id="userInput" placeholder="Yahan pucho...">
                 <button onclick="askAI()">SEND</button>
             </div>
             <div class="controls">
@@ -67,16 +65,16 @@
             box.scrollTop = box.scrollHeight;
 
             try {
-                const res = await fetch('/api/chat', {
+                const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ 
-                        prompt: "Aapka naam Super AI hai. Aapko Aditya ne banaya hai. Friendly Hinglish dost ki tarah jawab do: " + userText, 
+                        prompt: "Aap Aditya ke Super AI dost ho. Friendly jawab do: " + userText, 
                         image: currentImg 
                     })
                 });
                 
-                const data = await res.json();
+                const data = await response.json();
                 if (data.reply) {
                     box.innerHTML += `<div class="msg ai">${data.reply}</div>`;
                     const voice = new SpeechSynthesisUtterance(data.reply);
@@ -86,7 +84,7 @@
                     throw new Error();
                 }
             } catch (err) {
-                box.innerHTML += `<div class="msg ai">Bhai, thoda server load le raha hai, 1 min baad fir se pucho!</div>`;
+                box.innerHTML += `<div class="msg ai">Aditya bhai, lagta hai API Key set nahi hai ya server so gaya hai. Settings check karo!</div>`;
             }
             box.scrollTop = box.scrollHeight;
         }

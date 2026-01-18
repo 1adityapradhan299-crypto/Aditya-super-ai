@@ -3,48 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aditya Super AI</title>
+    <title>Aditya's Best Friend AI 🚀</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 20px; }
-        .box { max-width: 400px; margin: auto; background: #1e293b; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #chat { height: 300px; overflow-y: auto; background: #0f172a; padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left; border: 1px solid #334155; }
-        input { width: 80%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 10px; background: #334155; color: white; outline: none; }
-        button { width: 85%; padding: 12px; background: #38bdf8; color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .premium { font-size: 12px; color: #94a3b8; margin-top: 15px; border-top: 1px solid #334155; padding-top: 10px; }
+        body { font-family: 'Poppins', sans-serif; background: #0b0e14; color: #00ff41; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .app-container { width: 95%; max-width: 450px; height: 90vh; background: #1a1f26; border-radius: 25px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 40px rgba(0,255,65,0.2); border: 1px solid #00ff41; }
+        .header { background: #252a34; padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; border-bottom: 1px solid #00ff41; color: #00ff41; }
+        #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; background: #0b0e14; }
+        .msg { padding: 12px 16px; border-radius: 20px; max-width: 85%; line-height: 1.4; font-size: 0.95rem; }
+        .user { background: #00ff41; color: #000; align-self: flex-end; font-weight: bold; }
+        .ai { background: #252a34; color: #00ff41; align-self: flex-start; border: 1px solid #00ff4133; }
+        .input-area { padding: 15px; background: #1a1f26; display: flex; flex-direction: column; gap: 8px; }
+        .controls { display: flex; gap: 8px; }
+        input { flex: 1; background: #252a34; border: 1px solid #00ff41; padding: 12px; border-radius: 12px; color: #00ff41; outline: none; }
+        button { background: #00ff41; color: #000; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .cam-btn { background: #222; color: #00ff41; border: 1px solid #00ff41; }
+        .preview-img { width: 100px; height: 100px; object-fit: cover; border-radius: 10px; border: 2px solid #00ff41; margin-bottom: 5px; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>Aditya AI 🚀</h1>
-        <div id="chat">नमस्ते आदित्य भाई! मैं आपका अपना AI हूँ। पूछिये, मैं आपकी क्या मदद कर सकता हूँ?</div>
-        <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें...">
-        <button onclick="askAI()">पूछें</button>
-        <div class="premium">💎 प्रीमियम फीचर्स (PDF/Image): ₹19/हफ्ता</div>
+    <div class="app-container">
+        <div class="header">ADITYA PRO FRIEND AI 🤖</div>
+        <div id="chat-box">
+            <div class="msg ai">Aur Aditya bhai, kaise ho? Kuch pucho ya camera kholkar dikhao, main ekdam doston ki tarah jawab dunga!</div>
+        </div>
+        <div class="input-area">
+            <div id="img-preview-box"></div>
+            <div class="controls">
+                <input type="text" id="userInput" placeholder="Yahan likhen Aditya bhai...">
+                <button onclick="askAI()">BHEJO</button>
+            </div>
+            <div class="controls">
+                <button class="cam-btn" onclick="document.getElementById('fileInput').click()">📁 Gallery</button>
+                <button class="cam-btn" onclick="document.getElementById('fileInput').setAttribute('capture','environment'); document.getElementById('fileInput').click()">📷 Camera</button>
+                <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="showPreview()">
+            </div>
+        </div>
     </div>
-
     <script>
-        async function askAI() {
-            const input = document.getElementById('userInput').value;
-            const chat = document.getElementById('chat');
-            if(!input) return;
-            chat.innerHTML += `<p style="color:#38bdf8"><b>आप:</b> ${input}</p>`;
-            document.getElementById('userInput').value = '';
-            chat.innerHTML += `<p id="loading">AI सोच रहा है...</p>`;
-            chat.scrollTop = chat.scrollHeight;
-
-            try {
-                const res = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: input })
-                });
-                const data = await res.json();
-                document.getElementById('loading').remove();
-                chat.innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
-            } catch (err) {
-                document.getElementById('loading').innerHTML = "त्रुटि! सर्वर व्यस्त है।";
+        let base64Img = "";
+        function showPreview() {
+            const file = document.getElementById('fileInput').files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                base64Img = reader.result;
+                document.getElementById('img-preview-box').innerHTML = `<img src="${base64Img}" class="preview-img">`;
             }
-            chat.scrollTop = chat.scrollHeight;
+            if(file) reader.readAsDataURL(file);
+        }
+
+        async function askAI() {
+            const input = document.getElementById('userInput');
+            const box = document.getElementById('chat-box');
+            if(!input.value.trim() && !base64Img) return;
+
+            box.innerHTML += `<div class="msg user">${input.value}</div>`;
+            const promptText = input.value;
+            const currentImg = base64Img;
+            input.value = '';
+            base64Img = "";
+            document.getElementById('img-preview-box').innerHTML = "";
+            box.scrollTop = box.scrollHeight;
+
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ prompt: "Hamesha ekdam friendly dost ki tarah Hinglish mein jawab do: " + promptText, image: currentImg })
+            });
+            const data = await res.json();
+            box.innerHTML += `<div class="msg ai">${data.reply}</div>`;
+            box.scrollTop = box.scrollHeight;
+
+            const voice = new SpeechSynthesisUtterance(data.reply);
+            voice.lang = 'hi-IN';
+            window.speechSynthesis.speak(voice);
         }
     </script>
 </body>

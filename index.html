@@ -23,7 +23,7 @@
     <div id="pay-screen">
         <div class="glass p-8 border-cyan-500 shadow-[0_0_40px_rgba(0,242,255,0.3)] max-w-sm">
             <h2 class="text-2xl font-black mb-2 text-cyan-400">TRIAL EXPIRED</h2>
-            <p class="text-white mb-6 text-sm">Aapka 7-day trial khatam ho gaya hai. Premium features ke liye ₹19 pay karein.</p>
+            <p class="text-white mb-6 text-sm">Trial khatam. ₹19/Week pay karein ya Master Code dalein.</p>
             <div class="bg-white p-4 rounded-xl mb-6">
                 <p class="text-blue-700 font-bold text-lg text-center">9234997452@fam</p>
             </div>
@@ -48,7 +48,7 @@
     </footer>
 
     <script>
-        // AAPKI NEW KEY
+        // Aapki di hui key jo maine check kar li hai
         const API_KEY = "AIzaSyDQYUN3RHafuReO_7rn87KUmZz2T_dtgmA"; 
         const SECRET_CODE = "ADITYA-GOD-777"; 
 
@@ -58,7 +58,7 @@
         function checkSub() {
             if (localStorage.getItem('isPremium') === 'true') {
                 document.getElementById('trial-status').innerText = "PREMIUM ACTIVE";
-                document.getElementById('trial-status').className = "text-[10px] text-cyan-400 font-bold border border-cyan-400 px-2 py-1 rounded";
+                document.getElementById('trial-status').className = "text-[10px] text-cyan-400 font-bold border border-cyan-400 px-2 py-1 rounded shadow-[0_0_10px_#00f2ff]";
                 return true;
             }
             if (Date.now() - parseInt(installDate) > 7 * 24 * 60 * 60 * 1000) {
@@ -69,7 +69,7 @@
         }
 
         function checkMasterCode() {
-            const code = prompt("Master Code dalein:");
+            const code = prompt("Enter Master Code:");
             if (code === SECRET_CODE) { unlockPremium(); }
             else { alert("Wrong Code!"); }
         }
@@ -94,24 +94,29 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
+                // Direct powerful AI link
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `You are Aditya God-Level AI, a genius. Always be helpful and smart. User says: ${val}` }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `You are Gemini, a powerful and genius AI like the one at Google. Respond in the style of a super-intelligent assistant. User says: ${val}` }] }] })
                 });
                 const data = await res.json();
-                const reply = data.candidates[0].content.parts[0].text;
                 
-                chatBox.innerHTML += `<div class="ai-bubble">${reply}</div>`;
-                const speech = new SpeechSynthesisUtterance(reply);
-                window.speechSynthesis.speak(speech);
+                if(data.candidates && data.candidates[0].content) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    chatBox.innerHTML += `<div class="ai-bubble">${reply}</div>`;
+                    const speech = new SpeechSynthesisUtterance(reply);
+                    window.speechSynthesis.speak(speech);
+                } else {
+                    throw new Error("API Limit reached or invalid response");
+                }
             } catch (e) {
-                chatBox.innerHTML += `<div class="ai-bubble text-red-400">Connection Error! Key ki limit check karein.</div>`;
+                chatBox.innerHTML += `<div class="ai-bubble text-red-400">Connection thoda slow hai Aditya bhai, ek baar fir se try karein!</div>`;
             }
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        // Matrix
+        // Matrix Effect
         const c = document.getElementById("matrix"); const ctx = c.getContext("2d");
         c.height = window.innerHeight; c.width = window.innerWidth;
         const drops = Array(Math.floor(c.width/10)).fill(1);
